@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
 const projects = [
@@ -29,8 +28,6 @@ export function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border h-16 flex items-center">
       <div className="w-full max-w-7xl mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <SidebarTrigger />
-          <div className="h-6 w-px bg-border hidden md:block" />
           <h2 className="text-sm font-semibold text-muted-foreground hidden md:block">
             Project Overview
           </h2>
