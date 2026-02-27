@@ -48,7 +48,7 @@ export function AppSidebar() {
       collapsible="icon"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
-      className="transition-all duration-300 ease-in-out"
+      className="transition-all duration-300 ease-in-out border-r border-sidebar-border"
     >
       <SidebarHeader className="border-b p-4">
         <Link href="/" className="flex items-center gap-3">
