@@ -24,6 +24,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
@@ -40,20 +41,28 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { setOpen } = useSidebar();
 
   return (
-    <Sidebar>
+    <Sidebar 
+      collapsible="icon"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      className="transition-all duration-300 ease-in-out"
+    >
       <SidebarHeader className="border-b p-4">
         <Link href="/" className="flex items-center gap-3">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0">
             <Layers className="text-white w-5 h-5" />
           </div>
-          <span className="font-bold text-xl tracking-tight text-primary">NexusSight</span>
+          <span className="font-bold text-xl tracking-tight text-primary group-data-[collapsible=icon]:hidden">
+            NexusSight
+          </span>
         </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <SidebarGroupLabel className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground group-data-[collapsible=icon]:hidden">
             Módulos del Sistema
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -63,6 +72,7 @@ export function AppSidebar() {
                   <SidebarMenuButton 
                     asChild 
                     isActive={pathname === item.href}
+                    tooltip={item.name}
                     className={cn(
                       "flex items-center gap-3 px-4 py-2 rounded-md transition-colors",
                       pathname === item.href 
