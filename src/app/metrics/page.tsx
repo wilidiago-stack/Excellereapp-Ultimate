@@ -51,15 +51,22 @@ const flightData = [
 ];
 
 const resourceData = [
-  { name: 'Mapping', value: 40, color: 'hsl(var(--primary))' },
-  { name: 'Inspection', value: 30, color: 'hsl(var(--secondary))' },
-  { name: 'Surveying', value: 20, color: 'hsl(var(--accent))' },
-  { name: 'Research', value: 10, color: 'hsl(var(--muted-foreground))' },
+  { name: 'Mapping', value: 40, fill: 'var(--color-mapping)' },
+  { name: 'Inspection', value: 30, fill: 'var(--color-inspection)' },
+  { name: 'Surveying', value: 20, fill: 'var(--color-surveying)' },
+  { name: 'Research', value: 10, fill: 'var(--color-research)' },
 ];
 
 const chartConfig: ChartConfig = {
   flights: { label: 'Flights Conducted', color: 'hsl(var(--primary))' },
   processing: { label: 'Data Processing (Hrs)', color: 'hsl(var(--secondary))' },
+};
+
+const pieChartConfig: ChartConfig = {
+  mapping: { label: 'Mapping', color: 'hsl(var(--primary))' },
+  inspection: { label: 'Inspection', color: 'hsl(var(--secondary))' },
+  surveying: { label: 'Surveying', color: 'hsl(var(--accent))' },
+  research: { label: 'Research', color: 'hsl(var(--muted-foreground))' },
 };
 
 export default function MetricsPage() {
@@ -143,29 +150,34 @@ export default function MetricsPage() {
             <CardDescription>Flight time distribution by task type.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
-            <div className="h-[200px] w-full flex items-center justify-center">
-               <ResponsiveContainer width="100%" height="100%">
-                 <PieChart>
-                    <Pie
-                      data={resourceData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {resourceData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                 </PieChart>
-               </ResponsiveContainer>
-            </div>
+            <ChartContainer config={pieChartConfig} className="h-[250px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={resourceData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {resourceData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartContainer>
             <div className="space-y-4">
-              {resourceData.map((item) => (
-                <div key={item.name} className="space-y-1">
+              {[
+                { name: 'Mapping', value: 40, key: 'mapping' },
+                { name: 'Inspection', value: 30, key: 'inspection' },
+                { name: 'Surveying', value: 20, key: 'surveying' },
+                { name: 'Research', value: 10, key: 'research' },
+              ].map((item) => (
+                <div key={item.key} className="space-y-1">
                   <div className="flex justify-between text-xs font-bold">
                     <span className="text-muted-foreground">{item.name}</span>
                     <span className="text-primary">{item.value}%</span>
