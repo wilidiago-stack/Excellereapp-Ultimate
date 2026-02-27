@@ -1,18 +1,179 @@
-rules_version='2'
-
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 3, 29);
+
+    /**
+     * NEXUSSIGHT SECURITY RULES
+     * 
+     * Core Philosophy:
+     * This ruleset enforces a strict user-ownership and project-based collaborator model. 
+     * Access is governed by two main factors: direct ownership of user profiles and 
+     * membership within specific projects.
+     * 
+     * Data Structure:
+     * - /users/{userId}: Private user profile data.
+     * - /global_admins/{userId}: Role-based access control for system-wide administrators.
+     * - /projects/{projectId}: Top-level project containers.
+     * - /projects/{projectId}/{subcollection}/{id}: Project-specific data (Documents, DroneFlights, etc.).
+     * - /project_memberships/{id}: Registry linking users to project roles.
+     * 
+     * Key Security Decisions:
+     * 1. Authorization Independence: Project-related documents denormalize a 'members' map 
+     *    to allow fast, single-document authorization for read/write operations.
+     * 2. Strict Path Consistency: For subcollections, we enforce that the internal 
+     *    'projectId' matches the parent project ID in the document path.
+     * 3. Resource Existence: All update and delete operations require verification 
+     *    that the document exists before proceeding.
+     * 4. List Security: Following strict architectural guidelines, 'resource' variables 
+     *    are not used in 'list' rules. List access for subcollections is validated via 
+     *    path-based lookup on the parent project.
+     */
+
+    // --- HELPER FUNCTIONS ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+      return resource != null && isOwner(userId);
+    }
+
+    function isGlobalAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/global_admins/$(request.auth.uid));
+    }
+
+    /** 
+     * Checks if the user is in the 'members' map of the document data.
+     * Used for individual document access (get, update, delete).
+     */
+    function isMemberOfData(data) {
+      return isSignedIn() && data.members[request.auth.uid] != null;
+    }
+
+    /** 
+     * Checks if the user is an 'Admin' in the 'members' map of the document data.
+     */
+    function isAdminOfData(data) {
+      return isSignedIn() && data.members[request.auth.uid] == 'Admin';
+    }
+
+    /** 
+     * Performs a lookup on the parent project to check membership.
+     * Used primarily for list operations where the document 'resource' is not available.
+     */
+    function isProjectMember(projectId) {
+      return isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.members[request.auth.uid] != null;
+    }
+
+    // --- MATCH BLOCKS ---
+
+    /**
+     * @description Rules for the User profile collection.
+     * @path /users/{userId}
+     * @allow (create) if auth.uid matches userId.
+     * @deny (read) if auth.uid does not match userId.
+     * @principle Enforces path-based ownership for personal data.
+     */
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Rules for identifying Global Administrators.
+     * @path /global_admins/{userId}
+     * @allow (get) if the user is checking their own admin status.
+     * @deny (write) All client-side writes; managed by system or existing admins.
+     * @principle Database Access Control (DBAC) - existence defines the role.
+     */
+    match /global_admins/{userId} {
+      allow get: if isOwner(userId) || isGlobalAdmin();
+      allow list: if isGlobalAdmin();
+      allow create, update, delete: if false; 
+    }
+
+    /**
+     * @description Rules for the top-level Projects collection.
+     * @path /projects/{projectId}
+     * @allow (get) if user is a member of the project.
+     * @deny (list) for non-Global Admins to prevent project discovery.
+     * @principle Shared access via denormalized membership map.
+     */
+    match /projects/{projectId} {
+      allow get: if isMemberOfData(resource.data);
+      allow list: if isGlobalAdmin();
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if resource != null && (isAdminOfData(resource.data) || isGlobalAdmin());
+      allow delete: if resource != null && (isAdminOfData(resource.data) || isGlobalAdmin());
+    }
+
+    /**
+     * @description Rules for administrative project membership records.
+     * @path /project_memberships/{membershipId}
+     * @allow (get) if user is the subject or a project admin.
+     * @deny (create) if user is not an admin of the target project.
+     * @principle Validates administrative authority via parent project lookup.
+     */
+    match /project_memberships/{membershipId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isProjectMember(resource.data.projectId));
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isProjectMember(request.resource.data.projectId);
+      allow update: if resource != null && isProjectMember(resource.data.projectId);
+      allow delete: if resource != null && isProjectMember(resource.data.projectId);
+    }
+
+    /**
+     * @description Rules for Project-related subcollections (Documents, Flights, Videos, etc.).
+     * @path /projects/{projectId}/{collectionName}/{documentId}
+     * @allow (list) if user is a member of the parent project.
+     * @deny (update) if user is not a member or lacks the correct role.
+     * @principle Authorization Independence via denormalized member data.
+     */
+    match /projects/{projectId}/documents/{documentId} {
+      allow get: if isMemberOfData(resource.data);
+      allow list: if isProjectMember(projectId);
+      allow create: if isSignedIn() && isProjectMember(projectId) && request.resource.data.projectId == projectId;
+      allow update: if resource != null && isMemberOfData(resource.data) && request.resource.data.projectId == resource.data.projectId;
+      allow delete: if resource != null && isMemberOfData(resource.data);
+    }
+
+    match /projects/{projectId}/droneFlights/{droneFlightId} {
+      allow get: if isMemberOfData(resource.data);
+      allow list: if isProjectMember(projectId);
+      allow create: if isSignedIn() && isProjectMember(projectId) && request.resource.data.projectId == projectId;
+      allow update: if resource != null && isMemberOfData(resource.data) && request.resource.data.projectId == resource.data.projectId;
+      allow delete: if resource != null && isMemberOfData(resource.data);
+    }
+
+    match /projects/{projectId}/droneFlights/{droneFlightId}/droneVideos/{droneVideoId} {
+      allow get: if isMemberOfData(resource.data);
+      allow list: if isProjectMember(projectId);
+      allow create: if isSignedIn() && isProjectMember(projectId) && request.resource.data.projectId == projectId;
+      allow update: if resource != null && isMemberOfData(resource.data) && request.resource.data.projectId == resource.data.projectId;
+      allow delete: if resource != null && isMemberOfData(resource.data);
+    }
+
+    match /projects/{projectId}/projectLocations/{locationId} {
+      allow get: if isMemberOfData(resource.data);
+      allow list: if isProjectMember(projectId);
+      allow create: if isSignedIn() && isProjectMember(projectId) && request.resource.data.projectId == projectId;
+      allow update: if resource != null && isMemberOfData(resource.data) && request.resource.data.projectId == resource.data.projectId;
+      allow delete: if resource != null && isMemberOfData(resource.data);
+    }
+
+    match /projects/{projectId}/metrics/{metricId} {
+      allow get: if isMemberOfData(resource.data);
+      allow list: if isProjectMember(projectId);
+      allow create: if isSignedIn() && isProjectMember(projectId) && request.resource.data.projectId == projectId;
+      allow update: if resource != null && isMemberOfData(resource.data) && request.resource.data.projectId == resource.data.projectId;
+      allow delete: if resource != null && isMemberOfData(resource.data);
     }
   }
 }

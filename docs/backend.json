@@ -1,0 +1,571 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user account within the NexusSight application. This entity manages user-specific profile information and access details, excluding authentication credentials which are handled by an external system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address, used for communication and as a unique login identifier.",
+          "format": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the user."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates whether the user's account is active and can access the system."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of the last update to the user account information.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Project": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Project",
+      "type": "object",
+      "description": "Represents a project managed within NexusSight. Projects serve as containers for documents, drone videos, metrics, and other project-related data, allowing for multi-project management.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Project entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the project."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the project's purpose and scope."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the project (e.g., 'Active', 'Archived', 'Planning', 'Completed')."
+        },
+        "startDate": {
+          "type": "string",
+          "description": "The planned or actual start date of the project.",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "The planned or actual end date of the project.",
+          "format": "date"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "Reference to the User who owns or created the project. (Relationship: User 1:N Project)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the project was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of the last update to the project information.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "status",
+        "ownerId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ProjectMembership": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ProjectMembership",
+      "type": "object",
+      "description": "Links users to projects and defines their role within each specific project, enabling access control and multi-project user management.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ProjectMembership entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who is a member of the project. (Relationship: User 1:N ProjectMembership)"
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Reference to the Project the user is a member of. (Relationship: Project 1:N ProjectMembership)"
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user within this specific project (e.g., 'Admin', 'Editor', 'Viewer')."
+        },
+        "assignedAt": {
+          "type": "string",
+          "description": "Timestamp when the user was assigned to this project role.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "projectId",
+        "role",
+        "assignedAt"
+      ]
+    },
+    "Document": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Document",
+      "type": "object",
+      "description": "Stores metadata for project-related documents uploaded by users, linking them to specific projects.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Document entity."
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Reference to the Project this document belongs to. (Relationship: Project 1:N Document)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title or name of the document."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or summary of the document's content."
+        },
+        "fileUrl": {
+          "type": "string",
+          "description": "URL to the actual document file stored in an external storage system.",
+          "format": "uri"
+        },
+        "fileType": {
+          "type": "string",
+          "description": "The MIME type or file extension of the document (e.g., 'application/pdf', 'image/jpeg')."
+        },
+        "uploadedByUserId": {
+          "type": "string",
+          "description": "Reference to the User who uploaded this document. (Relationship: User 1:N Document)"
+        },
+        "uploadedAt": {
+          "type": "string",
+          "description": "Timestamp when the document was uploaded.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "title",
+        "fileUrl",
+        "fileType",
+        "uploadedByUserId",
+        "uploadedAt"
+      ]
+    },
+    "DroneFlight": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DroneFlight",
+      "type": "object",
+      "description": "Represents a single drone flight mission, which can be associated with a project and may produce multiple drone videos. It can also store a reference to the flight path data.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the DroneFlight entity."
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Reference to the Project this drone flight is associated with. (Relationship: Project 1:N DroneFlight)"
+        },
+        "title": {
+          "type": "string",
+          "description": "A descriptive title for the drone flight (e.g., 'Weekly Site Inspection', 'Boundary Survey')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the drone flight's purpose and scope."
+        },
+        "flightDate": {
+          "type": "string",
+          "description": "The date when the drone flight took place.",
+          "format": "date-time"
+        },
+        "pilotId": {
+          "type": "string",
+          "description": "Reference to the User who piloted the drone for this flight. (Relationship: User 1:N DroneFlight)"
+        },
+        "flightPathGeoJsonUrl": {
+          "type": "string",
+          "description": "Optional URL to a GeoJSON or KML file containing detailed geospatial flight path data for visualization on maps.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the drone flight record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of the last update to the drone flight record.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "title",
+        "flightDate",
+        "pilotId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "DroneVideo": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DroneVideo",
+      "type": "object",
+      "description": "Stores metadata for drone visualization videos, linking them to a specific drone flight and project.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the DroneVideo entity."
+        },
+        "droneFlightId": {
+          "type": "string",
+          "description": "Reference to the DroneFlight this video was captured during. (Relationship: DroneFlight 1:N DroneVideo)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title or name of the drone video."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or summary of the video's content."
+        },
+        "videoUrl": {
+          "type": "string",
+          "description": "URL to the actual drone video file stored in an external storage system.",
+          "format": "uri"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "Optional URL to a thumbnail image for the video.",
+          "format": "uri"
+        },
+        "recordedAt": {
+          "type": "string",
+          "description": "Timestamp when the drone video was recorded.",
+          "format": "date-time"
+        },
+        "uploadedByUserId": {
+          "type": "string",
+          "description": "Reference to the User who uploaded this drone video. (Relationship: User 1:N DroneVideo)"
+        },
+        "uploadedAt": {
+          "type": "string",
+          "description": "Timestamp when the drone video was uploaded.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "droneFlightId",
+        "title",
+        "videoUrl",
+        "recordedAt",
+        "uploadedByUserId",
+        "uploadedAt"
+      ]
+    },
+    "ProjectLocation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ProjectLocation",
+      "type": "object",
+      "description": "Defines a specific geographical location relevant to a project, used for mapping and contextual information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ProjectLocation entity."
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Reference to the Project this location is associated with. (Relationship: Project 1:N ProjectLocation)"
+        },
+        "name": {
+          "type": "string",
+          "description": "A descriptive name for the project location (e.g., 'Main Construction Site', 'Inspection Zone A')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the location's significance to the project."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "The geographical latitude of the project location."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "The geographical longitude of the project location."
+        },
+        "address": {
+          "type": "string",
+          "description": "The physical address corresponding to the project location (optional)."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the project location record was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of the last update to the project location record.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "name",
+        "latitude",
+        "longitude",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Metric": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Metric",
+      "type": "object",
+      "description": "Stores individual data points for tracking project performance, progress, and other quantitative information, used for dashboards and graphs.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Metric entity."
+        },
+        "projectId": {
+          "type": "string",
+          "description": "Reference to the Project this metric belongs to. (Relationship: Project 1:N Metric)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the metric (e.g., 'Progress', 'Budget Spent', 'Tasks Completed')."
+        },
+        "value": {
+          "type": "number",
+          "description": "The numerical value of the metric at the recorded time."
+        },
+        "unit": {
+          "type": "string",
+          "description": "The unit of measurement for the metric value (e.g., '%', '$', 'count', 'days')."
+        },
+        "recordedAt": {
+          "type": "string",
+          "description": "Timestamp when this metric value was recorded.",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief explanation or context for the metric."
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "name",
+        "value",
+        "unit",
+        "recordedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores individual user profile data. Access is strictly limited to the user corresponding to the {userId} in the path."
+        }
+      },
+      {
+        "path": "/global_admins/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Identifies users with global administrator privileges. The mere existence of a document at this path grants global admin access (DBAC principle). Documents are usually empty or contain minimal data."
+        }
+      },
+      {
+        "path": "/projects/{projectId}",
+        "definition": {
+          "entityName": "Project",
+          "schema": {
+            "$ref": "#/backend/entities/Project"
+          },
+          "description": "Stores main project details. Includes a denormalized 'members' map (e.g., { 'uid1': 'admin', 'uid2': 'viewer' }) for project-level authorization. This map is critical for secure QAPs and authorization independence for its subcollections.",
+          "params": [
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the project."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/project_memberships/{membershipId}",
+        "definition": {
+          "entityName": "ProjectMembership",
+          "schema": {
+            "$ref": "#/backend/entities/ProjectMembership"
+          },
+          "description": "Links users to projects with specific roles (e.g., 'Admin', 'Editor', 'Viewer'). This is an administrative record; changes here must trigger Cloud Functions to update the denormalized 'members' map on the corresponding Project document."
+        }
+      },
+      {
+        "path": "/projects/{projectId}/documents/{documentId}",
+        "definition": {
+          "entityName": "Document",
+          "schema": {
+            "$ref": "#/backend/entities/Document"
+          },
+          "description": "Stores metadata for project-related documents. Includes 'projectId' (from path) and a denormalized 'members' map (copied from the parent Project) for authorization independence and secure list operations.",
+          "params": [
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the parent project."
+            },
+            {
+              "name": "documentId",
+              "description": "The unique identifier of the document."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/projects/{projectId}/droneFlights/{droneFlightId}",
+        "definition": {
+          "entityName": "DroneFlight",
+          "schema": {
+            "$ref": "#/backend/entities/DroneFlight"
+          },
+          "description": "Represents a single drone flight mission within a project. Includes 'projectId' (from path) and a denormalized 'members' map (copied from the parent Project) for authorization independence and secure list operations.",
+          "params": [
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the parent project."
+            },
+            {
+              "name": "droneFlightId",
+              "description": "The unique identifier of the drone flight."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/projects/{projectId}/droneFlights/{droneFlightId}/droneVideos/{droneVideoId}",
+        "definition": {
+          "entityName": "DroneVideo",
+          "schema": {
+            "$ref": "#/backend/entities/DroneVideo"
+          },
+          "description": "Stores metadata for drone visualization videos. Requires 'projectId' (not in original schema, added for path and auth), 'droneFlightId' (from path), and a denormalized 'members' map (copied from the Project) for authorization independence and secure list operations.",
+          "params": [
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the parent project."
+            },
+            {
+              "name": "droneFlightId",
+              "description": "The unique identifier of the parent drone flight."
+            },
+            {
+              "name": "droneVideoId",
+              "description": "The unique identifier of the drone video."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/projects/{projectId}/projectLocations/{locationId}",
+        "definition": {
+          "entityName": "ProjectLocation",
+          "schema": {
+            "$ref": "#/backend/entities/ProjectLocation"
+          },
+          "description": "Defines geographical locations relevant to a project. Includes 'projectId' (from path) and a denormalized 'members' map (copied from the parent Project) for authorization independence and secure list operations.",
+          "params": [
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the parent project."
+            },
+            {
+              "name": "locationId",
+              "description": "The unique identifier of the project location."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/projects/{projectId}/metrics/{metricId}",
+        "definition": {
+          "entityName": "Metric",
+          "schema": {
+            "$ref": "#/backend/entities/Metric"
+          },
+          "description": "Stores individual data points for tracking project performance. Includes 'projectId' (from path) and a denormalized 'members' map (copied from the parent Project) for authorization independence and secure list operations.",
+          "params": [
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the parent project."
+            },
+            {
+              "name": "metricId",
+              "description": "The unique identifier of the metric."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure for NexusSight is designed with a strong emphasis on Authorization Independence (Mandate A) and enabling efficient Queryable Access Patterns (QAPs). The core strategy involves denormalizing authorization context where critical, and structurally segregating data based on its security posture (Mandate B).\n\n1.  **User Data (`/users/{userId}`):** User profiles are stored in a top-level collection, adhering to path-based ownership (Mandate C.1). This makes authorization straightforward: `request.auth.uid` must match `{userId}`.\n\n2.  **Global Roles (`/global_admins/{userId}`):** For high-level administrative functions (e.g., managing users, creating new projects), a dedicated top-level collection is used. This follows the DBAC (Database Access Control) principle of \"existence over content\" (Mandate C.4). Authorization simply checks for the existence of a document corresponding to `request.auth.uid`.\n\n3.  **Project Data (`/projects/{projectId}`):** Projects are top-level entities. Each `Project` document includes a denormalized `members` map (`members: { [uid]: \"role\" }`). This map is **CRITICAL** for Authorization Independence (Mandate A) for all project-related subcollections. Instead of relying on `get()` calls to the parent `Project` document from subcollections, the `members` map is copied into every document within its subcollections (Documents, DroneFlights, DroneVideos, ProjectLocations, Metrics). This ensures that any document's authorization can be evaluated solely based on its own data, eliminating expensive `get()` calls in rules and supporting atomic operations.\n    *   **QAPs for Projects:** Users can easily list projects they are members of using a `where('members.' + request.auth.uid, '!=', null)` query, which is efficient and secure due to the denormalized `members` map.\n\n4.  **Project Subcollections (e.g., `/projects/{projectId}/documents/{documentId}`):** All entities directly related to a project (`Document`, `DroneFlight`, `DroneVideo`, `ProjectLocation`, `Metric`) are organized as subcollections under their respective projects. This creates a clear hierarchical structure (Mandate C.2, C.3) and makes the `projectId` available in the document path.\n    *   **Authorization Independence in Subcollections:** Crucially, each document in these subcollections will have its own denormalized `members` map, copied from its parent `Project` document. For example, a `Document` document at `/projects/{projectId}/documents/{documentId}` will contain `resource.data.members: { ... }`. This allows security rules like `allow read: if resource.data.members[request.auth.uid] != null;` without any `get()` calls, adhering strictly to Mandate A. Updates to the `Project`'s `members` map (triggered by `ProjectMembership` changes) must be propagated to all child documents via Cloud Functions.\n    *   **QAPs for Subcollections:** With the `members` map denormalized into each subcollection document, listing operations are highly efficient and secure. For example, to list documents for a specific project, a query like `collection('/projects/{projectId}/documents').where('members.' + request.auth.uid, '!=', null)` works perfectly, as the security rule (`resource.data.members[request.auth.uid] != null`) can be evaluated for each document without cross-document reads.\n\n5.  **ProjectMembership (`/project_memberships/{membershipId}`):** This collection serves as an administrative record of user-to-project role assignments. It is kept as a top-level collection. While actions on this collection (create, update, delete) will likely require a `get()` to the associated `Project` document to verify `request.auth.uid` has an 'admin' role in that project, this is an acceptable trade-off. `ProjectMembership` defines authorization, rather than being simply protected by it. Changes to `ProjectMembership` documents must trigger Cloud Functions to update the denormalized `members` map on the corresponding `Project` document and subsequently cascade to all subcollection documents, maintaining data consistency and authorization independence for runtime access.\n    *   **QAPs for ProjectMembership:** Users can query their own memberships (`where('userId', '==', request.auth.uid)`). Project admins can query memberships for their project (`where('projectId', '==', someProjectId)`). While the rule evaluation might involve `get()` for each document during a list, this is less frequent than general data access and limited to administrative/personal scope.\n\n**Schema Enhancements:** To fully support this structure, the `DroneVideo` entity will need an explicit `projectId` field. Additionally, all documents in project-related subcollections (Documents, DroneFlights, DroneVideos, ProjectLocations, Metrics) will require a `members` map field (copied from their parent Project) for authorization independence."
+  }
+}
