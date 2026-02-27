@@ -1,12 +1,16 @@
 
-# Settings for Backend (on Cloud Run).
+# Configuración para el Backend de Excellereapp Ultimate en App Hosting.
 runConfig:
   minInstances: 0
+  maxInstances: 10
   memoryMiB: 512
+  cpu: 1
 
-# Environment variables and secrets.
+# Variables de entorno y secretos.
 env:
   - variable: GOOGLE_GENAI_API_KEY
     secret: GOOGLE_GENAI_API_KEY
     availability:
       - RUNTIME
+  - variable: NODE_ENV
+    value: production
