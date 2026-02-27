@@ -3,7 +3,9 @@
 import React from 'react';
 import { 
   ChevronDown,
+  Layers,
 } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -28,9 +30,14 @@ export function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border h-16 flex items-center">
       <div className="w-full max-w-7xl mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h2 className="text-sm font-semibold text-muted-foreground hidden md:block">
-            Project Overview
-          </h2>
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0">
+              <Layers className="text-white w-5 h-5" />
+            </div>
+            <span className="font-bold text-xl tracking-tight text-primary hidden sm:block">
+              NexusSight
+            </span>
+          </Link>
         </div>
 
         <div className="flex items-center gap-4">
