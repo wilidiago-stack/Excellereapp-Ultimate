@@ -13,7 +13,8 @@ import {
   Video, 
   Users, 
   HelpCircle,
-  Layers
+  Layers,
+  Image as ImageIcon
 } from 'lucide-react';
 import {
   Sidebar,
@@ -36,6 +37,7 @@ const navItems = [
   { name: 'Videos', icon: Video, href: '/videos' },
   { name: 'Weather', icon: CloudSun, href: '/weather' },
   { name: 'Users', icon: Users, href: '/users' },
+  { name: 'Media Manager', icon: ImageIcon, href: '/media' },
   { name: 'Help', icon: HelpCircle, href: '/help' },
 ];
 
