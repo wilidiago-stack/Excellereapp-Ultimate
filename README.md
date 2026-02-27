@@ -13,30 +13,33 @@ Este proyecto es un centro de inteligencia multi-proyecto y visualización de dr
 
 ## Conexión a GitHub
 
-Para sincronizar este proyecto con tu repositorio, ejecuta los siguientes comandos en tu terminal.
+Si recibes errores al configurar tu repositorio, sigue estas instrucciones:
 
-### Solución al error "remote origin already exists"
-Si recibes este error, ejecuta primero:
-```bash
-git remote remove origin
-```
-O simplemente actualiza la URL:
+### 1. Error: "remote origin already exists"
+Si intentas añadir el remoto y ya existe, actualízalo:
 ```bash
 git remote set-url origin https://github.com/wilidiago-stack/Excellereapp-Ultimate.git
 ```
 
-### Pasos iniciales recomendados
+### 2. Error: "No such remote 'origin'"
+Si intentas borrar o empujar y te dice que no existe, simplemente añádelo por primera vez:
+```bash
+git remote add origin https://github.com/wilidiago-stack/Excellereapp-Ultimate.git
+```
+
+### Pasos recomendados para subir el código (Flujo completo):
 ```bash
 git init
+git add .
+git commit -m "Initial commit: Excellereapp Ultimate"
+# Si falla el siguiente comando, usa 'git remote set-url origin ...'
 git remote add origin https://github.com/wilidiago-stack/Excellereapp-Ultimate.git
 git branch -M main
-git add .
-git commit -m "Initial commit: Excellereapp Ultimate con Media Manager"
 git push -u origin main
 ```
 
 ### Autenticación
-Si obtienes un error de autenticación, asegúrate de estar usando un **Personal Access Token (PAT)** de GitHub en lugar de tu contraseña normal.
+Si Git te pide contraseña y falla, recuerda que GitHub ahora requiere un **Personal Access Token (PAT)**. Créalo en tu configuración de GitHub -> Developer Settings -> Personal Access Tokens.
 
 ## Desarrollo
 
