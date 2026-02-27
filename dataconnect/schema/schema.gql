@@ -1,0 +1,55 @@
+type User @table {
+  username: String!
+  email: String!
+  role: String!
+  createdAt: Timestamp!
+  firstName: String
+  lastName: String
+  lastLogin: Timestamp
+}
+
+type Product @table {
+  name: String!
+  price: Float!
+  description: String!
+  stock: Int!
+  createdAt: Timestamp!
+  category: String
+  imageUrl: String
+}
+
+type Order @table {
+  user: User!
+  orderNumber: String!
+  totalAmount: Float!
+  status: String!
+  orderDate: Timestamp!
+  shippingAddress: String
+}
+
+type OrderItem @table {
+  order: Order!
+  product: Product!
+  quantity: Int!
+  unitPrice: Float!
+  note: String
+}
+
+type SupportTicket @table {
+  customer: User!
+  assignedTo: User
+  subject: String!
+  description: String!
+  status: String!
+  createdAt: Timestamp!
+  priority: String
+}
+
+type Announcement @table {
+  createdBy: User!
+  title: String!
+  content: String!
+  createdAt: Timestamp!
+  audienceRole: String
+  expiresAt: Timestamp
+}
