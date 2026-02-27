@@ -11,7 +11,7 @@ Este proyecto es un centro de inteligencia multi-proyecto y visualización de dr
 - **Asistente de Voz IA**: Navegación y ayuda contextual mediante Google Gemini.
 - **Gestión de Documentos**: Repositorio seguro para planos y registros de vuelo.
 
-## Conexión a GitHub
+## Solución de problemas con GitHub
 
 Si recibes errores al configurar tu repositorio, sigue estas instrucciones:
 
@@ -27,19 +27,34 @@ Si intentas borrar o empujar y te dice que no existe, simplemente añádelo por 
 git remote add origin https://github.com/wilidiago-stack/Excellereapp-Ultimate.git
 ```
 
-### Pasos recomendados para subir el código (Flujo completo):
+### 3. Error: "failed to push some refs"
+Este error ocurre porque el repositorio en GitHub tiene cambios que tú no tienes localmente (ej: un README creado en la web).
+**Si es tu primer commit y quieres sobrescribir lo que hay en GitHub:**
+```bash
+git push -u origin main --force
+```
+**Si quieres conservar ambos (RECOMENDADO):**
+```bash
+git pull origin main --rebase
+git push -u origin main
+```
+
+### Flujo recomendado para subir el código:
 ```bash
 git init
 git add .
 git commit -m "Initial commit: Excellereapp Ultimate"
-# Si falla el siguiente comando, usa 'git remote set-url origin ...'
 git remote add origin https://github.com/wilidiago-stack/Excellereapp-Ultimate.git
 git branch -M main
-git push -u origin main
+# Usa el comando con --force solo si es la primera vez y quieres limpiar el repo remoto
+git push -u origin main --force
 ```
 
 ### Autenticación
-Si Git te pide contraseña y falla, recuerda que GitHub ahora requiere un **Personal Access Token (PAT)**. Créalo en tu configuración de GitHub -> Developer Settings -> Personal Access Tokens.
+GitHub requiere un **Personal Access Token (PAT)** en lugar de tu contraseña normal. 
+1. Ve a GitHub -> Settings -> Developer Settings -> Personal Access Tokens (classic).
+2. Genera uno con permisos `repo`.
+3. Úsalo como contraseña cuando Git te la pida.
 
 ## Desarrollo
 
