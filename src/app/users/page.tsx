@@ -25,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 const users = [
   { id: 1, name: 'Alex Rivera', role: 'Admin', email: 'alex.r@nexussight.corp', projects: 5, status: 'Active', lastActive: '2 min ago' },
