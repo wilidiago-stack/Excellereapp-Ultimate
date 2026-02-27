@@ -23,36 +23,36 @@ import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function MediaManagerPage() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("banners");
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-            <ImageIcon className="w-6 h-6" /> Media & Brand Manager
+            <ImageIcon className="w-6 h-6" /> Gestor de Medios Corporativos
           </h1>
-          <p className="text-muted-foreground">Customize application banners, project visuals, and operational backgrounds.</p>
+          <p className="text-muted-foreground">Administra banners, visuales de proyectos y fondos de la interfaz.</p>
         </div>
         <Button className="bg-primary text-white shadow-lg shadow-primary/20">
           <Upload className="w-4 h-4 mr-2" />
-          Global Upload
+          Subida Global
         </Button>
       </div>
 
       <Alert className="bg-primary/5 border-primary/20">
         <AlertCircle className="h-4 w-4 text-primary" />
-        <AlertTitle className="text-primary font-bold">Protip: Optimization</AlertTitle>
+        <AlertTitle className="text-primary font-bold">Consejo de Optimización</AlertTitle>
         <AlertDescription className="text-muted-foreground text-sm">
-          For best performance, ensure banners are at least 1920x1080px and under 2MB. The system automatically generates optimized thumbnails for different viewports.
+          Para un rendimiento óptimo, asegúrate de que los banners tengan al menos 1920x1080px y pesen menos de 2MB. El sistema genera automáticamente miniaturas optimizadas.
         </AlertDescription>
       </Alert>
 
-      <Tabs defaultValue="banners" className="w-full">
+      <Tabs defaultValue="banners" className="w-full" onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3 mb-8">
-          <TabsTrigger value="banners">Banners & Heroes</TabsTrigger>
-          <TabsTrigger value="projects">Project Thumbnails</TabsTrigger>
-          <TabsTrigger value="backgrounds">UI Backgrounds</TabsTrigger>
+          <TabsTrigger value="banners">Banners y Héroes</TabsTrigger>
+          <TabsTrigger value="projects">Miniaturas de Proyecto</TabsTrigger>
+          <TabsTrigger value="backgrounds">Fondos de Interfaz</TabsTrigger>
         </TabsList>
 
         <TabsContent value="banners" className="space-y-6">
@@ -69,30 +69,30 @@ export default function MediaManagerPage() {
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                     <Button variant="secondary" size="sm">
-                      <Eye className="w-4 h-4 mr-2" /> Preview
+                      <Eye className="w-4 h-4 mr-2" /> Previsualizar
                     </Button>
                     <Button size="sm" className="bg-white text-primary hover:bg-white/90">
-                      <RefreshCcw className="w-4 h-4 mr-2" /> Replace
+                      <RefreshCcw className="w-4 h-4 mr-2" /> Reemplazar
                     </Button>
                   </div>
                   <Badge className="absolute top-3 left-3 bg-primary text-white border-none shadow-md">
-                    {idx === 0 ? "Main Dashboard Hero" : "Video Hub Banner"}
+                    {idx === 0 ? "Dashboard Hero" : "Video Hub Banner"}
                   </Badge>
                 </div>
                 <CardHeader>
                   <CardTitle className="text-lg font-bold text-primary">{img.description}</CardTitle>
                   <CardDescription className="flex items-center gap-2">
                     <span className="text-xs font-mono uppercase text-muted-foreground">ID: {img.id}</span>
-                    <Badge variant="outline" className="text-[10px] uppercase font-bold text-green-600 border-green-200">Active</Badge>
+                    <Badge variant="outline" className="text-[10px] uppercase font-bold text-green-600 border-green-200">Activo</Badge>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="grid gap-2">
-                      <Label htmlFor={`url-${img.id}`} className="text-xs font-bold uppercase text-muted-foreground">Image URL Override</Label>
+                      <Label htmlFor={`url-${img.id}`} className="text-xs font-bold uppercase text-muted-foreground">Sobrescribir URL de Imagen</Label>
                       <div className="flex gap-2">
                         <Input id={`url-${img.id}`} defaultValue={img.imageUrl} className="text-sm bg-muted/30 border-none h-9" />
-                        <Button size="sm" variant="outline" className="shrink-0">Apply</Button>
+                        <Button size="sm" variant="outline" className="shrink-0">Aplicar</Button>
                       </div>
                     </div>
                   </div>
@@ -121,13 +121,13 @@ export default function MediaManagerPage() {
                 </div>
                 <div className="p-3 bg-white border-t border-border/50">
                   <p className="text-xs font-bold text-primary truncate">{img.description}</p>
-                  <p className="text-[10px] text-muted-foreground mt-1">Uploaded: Oct 2023</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">Subido: Oct 2023</p>
                 </div>
               </Card>
             ))}
             <Card className="flex flex-col items-center justify-center aspect-square border-dashed border-2 border-muted hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer group">
                <Upload className="w-8 h-8 text-muted-foreground group-hover:text-primary mb-2" />
-               <p className="text-xs font-bold text-muted-foreground group-hover:text-primary">Add New Resource</p>
+               <p className="text-xs font-bold text-muted-foreground group-hover:text-primary">Añadir Recurso</p>
             </Card>
           </div>
         </TabsContent>
@@ -135,8 +135,8 @@ export default function MediaManagerPage() {
         <TabsContent value="backgrounds">
           <Card className="border-none shadow-sm">
             <CardHeader>
-              <CardTitle>System Dynamic Backgrounds</CardTitle>
-              <CardDescription>Manage images used in high-contrast or specialized weather modules.</CardDescription>
+              <CardTitle>Fondos Dinámicos del Sistema</CardTitle>
+              <CardDescription>Gestiona las imágenes utilizadas en módulos especializados de alto contraste.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -163,14 +163,13 @@ export default function MediaManagerPage() {
              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
                 <CheckCircle2 className="w-6 h-6 text-secondary" />
              </div>
-             <h3 className="text-2xl font-bold">Brand Guidelines Applied</h3>
+             <h3 className="text-2xl font-bold">Guía de Marca Aplicada</h3>
              <p className="text-primary-foreground/80 leading-relaxed">
-               Every image uploaded is automatically checked for contrast accessibility. 
-               This ensures that UI text elements remain readable over any banner you choose.
+               Cada imagen subida se verifica automáticamente para garantizar la legibilidad del texto de la interfaz sobre el banner elegido.
              </p>
              <div className="pt-4 flex gap-3">
-                <Button className="bg-secondary text-white border-none font-bold">View Brand Book</Button>
-                <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">Configuration Tips</Button>
+                <Button className="bg-secondary text-white border-none font-bold">Ver Manual de Marca</Button>
+                <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">Tips de Configuración</Button>
              </div>
           </CardContent>
           <div className="relative h-48 md:h-auto min-h-[300px]">
