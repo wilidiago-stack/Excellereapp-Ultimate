@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-dashboard",
+      "description": "Aerial view of a construction project",
+      "imageUrl": "https://images.unsplash.com/photo-1535732759880-bbd5c7265e3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb25zdHJ1Y3Rpb24lMjBzaXRlfGVufDB8fHx8MTc3MjExNzI0Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "construction site"
+    },
+    {
+      "id": "drone-video-1",
+      "description": "Drone footage of industrial site",
+      "imageUrl": "https://images.unsplash.com/photo-1685667967936-246a9b12080d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkcm9uZSUyMGZvb3RhZ2V8ZW58MHx8fHwxNzcyMjA3NDgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "drone footage"
+    },
+    {
+      "id": "drone-video-2",
+      "description": "Landscape mapping visualization",
+      "imageUrl": "https://images.unsplash.com/photo-1763194797341-9124879d0615?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bGFuZHNjYXBlJTIwbWFwcGluZ3xlbnwwfHx8fDE3NzIyMDc0ODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "landscape mapping"
+    },
+    {
+      "id": "map-placeholder",
+      "description": "Topographical map with project markers",
+      "imageUrl": "https://images.unsplash.com/photo-1718498576054-412e92061bbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx0b3BvZ3JhcGhpY2FsJTIwbWFwfGVufDB8fHx8MTc3MjIwNTU2NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "topographical map"
+    },
+    {
+      "id": "weather-background",
+      "description": "Cloudy blue sky",
+      "imageUrl": "https://images.unsplash.com/photo-1626019866260-d9e0bb648634?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjbG91ZHklMjBza3l8ZW58MHx8fHwxNzcyMjA3NDg0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cloudy sky"
+    }
+  ]
 }
